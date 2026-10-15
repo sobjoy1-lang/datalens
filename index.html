@@ -16,7 +16,7 @@
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div><strong>DataLens</strong><small data-i18n="brandTag">数据到洞察</small></div>
+        <div><strong>DataLens</strong></div>
       </div>
       <div class="workspace-card">
         <div class="eyebrow" data-i18n="workspace">当前工作区</div>
@@ -89,6 +89,7 @@
 
         <section class="view-panel hidden" id="view-story">
           <div class="section-heading"><div><span class="section-index">04 / STORY</span><h2 data-i18n="storyTitle">每一步都能复现，也能解释</h2></div><button class="primary-button" id="copyCode"><span>⧉</span><span data-i18n="copyCode">复制 pandas 代码</span></button></div>
+          <div class="story-actions"><div class="story-actions-copy"><span class="chart-kicker">NEXT MOVE</span><h3 data-i18n="nextMoveTitle">继续做点分析</h3><p data-i18n="nextMoveCopy">这里记录已经完成的步骤，也可以从下面直接开始下一步。</p></div><div class="story-action-buttons"><button class="outline-button" id="storyInsightBtn">✦ <span data-i18n="storyInsight">生成洞察</span></button><button class="outline-button" id="storyExploreBtn">⌁ <span data-i18n="storyExplore">进入联动分析</span></button><button class="outline-button" id="storyCleanBtn">✧ <span data-i18n="storyClean">处理数据质量</span></button><button class="outline-button" id="storyExportDataBtn">↓ <span data-i18n="storyExportData">导出当前数据</span></button></div></div>
           <div class="story-grid"><article class="timeline-card"><div class="chart-top"><div><span class="chart-kicker">ANALYSIS TRAIL</span><h3 data-i18n="trailTitle">分析轨迹</h3></div><button class="text-button" id="undoBtn" data-i18n="undo">撤销上一步</button></div><div id="timeline" class="timeline"></div></article><article class="code-card"><div class="chart-top"><div><span class="chart-kicker">PANDAS TRANSLATION</span><h3 data-i18n="codeTitle">等价代码</h3></div><span class="code-lang">PY</span></div><pre id="codeBlock"></pre></article></div>
           <div class="story-callout"><span>✳</span><div><strong data-i18n="storyCalloutTitle">分析结果不是终点</strong><p data-i18n="storyCalloutText">你可以把当前数据、筛选条件和操作轨迹一起导出，方便复查或继续分析。</p></div><button class="outline-button" id="exportStory" data-i18n="exportStory">导出分析记录</button></div>
         </section>
