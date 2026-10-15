@@ -2,6 +2,8 @@
 
 这是“可视化导论”数据分析作业的静态网站源代码。DataLens 用一个浏览器内的分析工作台把 pandas 的常用思路变成可视化操作，内置默认数据，也支持 CSV、TSV、JSON 和 Excel 文件。
 
+仓库根目录就是 GitHub Pages 的发布目录，`.github/workflows/pages.yml` 会在推送到 `main` 后自动部署。
+
 ## 亮点
 
 1. **自动洞察**：上传后根据字段类型生成地区、品类和月份洞察卡片。
@@ -17,7 +19,7 @@
 python -m http.server 8080
 ```
 
-然后访问 `http://localhost:8080`。页面通过 CDN 加载 ECharts 和 SheetJS，联网时支持完整图表与 Excel 导入。
+然后访问 `http://localhost:8080`。页面通过 CDN 加载 ECharts 和 SheetJS，联网时支持完整图表与 Excel 导入。若使用 GitHub Pages，请在仓库 Settings → Pages 中将 Source 设为 GitHub Actions，之后每次推送 `main` 会自动更新。
 
 ## 文件
 
