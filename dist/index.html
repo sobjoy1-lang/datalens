@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="DataLens 数据分析工作台：用图形理解 pandas 核心操作。" />
+  <title>DataLens · 数据到洞察</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">DL</span>
+        <div><strong>DataLens</strong><small data-i18n="brandTag">数据到洞察</small></div>
+      </div>
+      <div class="workspace-card">
+        <div class="eyebrow" data-i18n="workspace">当前工作区</div>
+        <div class="workspace-name">Retail Pulse</div>
+        <span class="status-dot"><i></i><span data-i18n="localMode">浏览器本地分析</span></span>
+      </div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-view="overview"><span class="nav-icon">◒</span><span data-i18n="navOverview">概览与洞察</span><kbd>01</kbd></button>
+        <button class="nav-item" data-view="explore"><span class="nav-icon">⌁</span><span data-i18n="navExplore">联动分析</span><kbd>02</kbd></button>
+        <button class="nav-item" data-view="clean"><span class="nav-icon">✦</span><span data-i18n="navClean">数据健康</span><kbd>03</kbd></button>
+        <button class="nav-item" data-view="story"><span class="nav-icon">↗</span><span data-i18n="navStory">分析轨迹</span><kbd>04</kbd></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="tip-card">
+          <span class="tip-star">✳</span>
+          <div><strong data-i18n="tipTitle">这不是静态报表</strong><p data-i18n="tipText">点击图表，数据表和指标会一起响应。</p></div>
+        </div>
+        <button class="sidebar-action" id="resetBtn"><span>↺</span><span data-i18n="reset">恢复演示数据</span></button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="breadcrumb"><span data-i18n="home">工作台</span><span>/</span><strong id="currentViewLabel">概览与洞察</strong></div>
+        <div class="top-actions">
+          <label class="upload-button"><input id="fileInput" type="file" accept=".csv,.tsv,.json,.xlsx,.xls" /><span>＋</span><span data-i18n="upload">加载数据</span></label>
+          <button class="ghost-button" id="exportBtn"><span>↓</span><span data-i18n="export">导出当前数据</span></button>
+          <button class="lang-toggle" id="langBtn">EN</button>
+          <div class="avatar">L</div>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="hero-row">
+          <div>
+            <div class="eyebrow accent-label">VISUAL DATA WORKBENCH</div>
+            <h1 data-i18n="pageTitle">把数据变成一组能继续追问的图。</h1>
+            <p class="hero-copy" data-i18n="pageSubtitle">上传、清洗、分组、联动。每一步都保留证据，也保留 pandas 的思路。</p>
+          </div>
+          <div class="hero-meta">
+            <span class="data-pill"><b id="datasetRows">96</b><small data-i18n="rows">行数据</small></span>
+            <span class="data-pill"><b id="datasetCols">9</b><small data-i18n="fields">字段</small></span>
+            <span class="data-pill violet"><b id="filterCount">全部</b><small data-i18n="filterState">当前筛选</small></span>
+          </div>
+        </section>
+
+        <section class="view-panel" id="view-overview">
+          <div class="section-heading"><div><span class="section-index">01 / INSIGHT</span><h2 data-i18n="overviewTitle">先看见数据在说什么</h2></div><button class="primary-button" id="insightBtn"><span>✦</span><span data-i18n="autoInsight">生成自动洞察</span></button></div>
+          <div class="kpi-grid" id="kpiGrid"></div>
+          <div class="insight-strip" id="insightStrip"></div>
+          <div class="chart-grid overview-charts">
+            <article class="chart-card chart-large"><div class="chart-top"><div><span class="chart-kicker">TREND / 01</span><h3 data-i18n="salesTrend">销售额趋势</h3></div><span class="chart-hint" data-i18n="brushHint">拖动底部时间轴筛选</span></div><div id="trendChart" class="chart"></div></article>
+            <article class="chart-card"><div class="chart-top"><div><span class="chart-kicker">RANK / 02</span><h3 data-i18n="regionRank">地区销售排行</h3></div><span class="chart-hint" data-i18n="clickHint">点击柱子联动</span></div><div id="regionChart" class="chart"></div></article>
+          </div>
+        </section>
+
+        <section class="view-panel hidden" id="view-explore">
+          <div class="section-heading"><div><span class="section-index">02 / EXPLORE</span><h2 data-i18n="exploreTitle">让图表和数据表一起响应</h2></div><button class="ghost-button" id="clearFilters"><span>×</span><span data-i18n="clearFilters">清除筛选</span></button></div>
+          <div class="explore-toolbar"><div><label data-i18n="dimension">分析维度</label><select id="dimensionSelect"></select></div><div><label data-i18n="measure">指标</label><select id="measureSelect"></select></div><div><label data-i18n="aggregation">聚合方式</label><select id="aggSelect"><option value="sum">Sum / 总和</option><option value="avg">Average / 平均</option><option value="count">Count / 计数</option></select></div><button class="primary-button" id="runExplore"><span>↗</span><span data-i18n="runAnalysis">运行分析</span></button></div>
+          <div class="chart-grid explore-charts"><article class="chart-card chart-large"><div class="chart-top"><div><span class="chart-kicker">GROUPBY / VISUAL</span><h3 id="exploreChartTitle">地区 × 销售额</h3></div><span class="chart-hint" data-i18n="clickHint">点击柱子联动</span></div><div id="exploreChart" class="chart tall"></div></article><article class="chart-card"><div class="chart-top"><div><span class="chart-kicker">SCATTER / OUTLIER</span><h3 data-i18n="scatterTitle">销售额与利润</h3></div><span class="chart-hint" data-i18n="hoverHint">悬停查看记录</span></div><div id="scatterChart" class="chart tall"></div></article></div>
+          <article class="table-card"><div class="table-card-head"><div><span class="chart-kicker">DATAFRAME / PREVIEW</span><h3 data-i18n="tableTitle">当前结果预览</h3></div><span class="record-count" id="recordCount"></span></div><div class="table-wrap"><table id="dataTable"></table></div></article>
+        </section>
+
+        <section class="view-panel hidden" id="view-clean">
+          <div class="section-heading"><div><span class="section-index">03 / HEALTH</span><h2 data-i18n="healthTitle">先修复数据，再相信图表</h2></div><span class="health-badge" id="healthBadge">GOOD / 92</span></div>
+          <div class="health-grid"><article class="health-score-card"><div class="score-ring" id="scoreRing"><div><strong id="healthScore">92</strong><small>/ 100</small></div></div><div><span class="chart-kicker">DATA HEALTH SCORE</span><h3 data-i18n="healthScoreTitle">数据健康度</h3><p data-i18n="healthScoreCopy">完整度、重复值和类型一致性的综合评分。</p></div></article><article class="quality-card"><div class="quality-head"><div><span class="chart-kicker">QUALITY CHECK</span><h3 data-i18n="qualityTitle">质量检查</h3></div><span id="qualityStatus" class="quality-status">READY</span></div><div id="qualityList" class="quality-list"></div></article></div>
+          <div class="clean-actions"><div><span class="chart-kicker">PANDAS-LIKE ACTIONS</span><h3 data-i18n="cleanActionsTitle">一键处理</h3><p data-i18n="cleanActionsCopy">每次处理都会出现在分析轨迹里。</p></div><div class="action-buttons"><button class="outline-button" id="fillBtn">✦ <span data-i18n="fillMissing">填充缺失值</span></button><button class="outline-button" id="dedupeBtn">⌘ <span data-i18n="removeDupes">删除重复行</span></button><button class="outline-button" id="normalizeBtn">↔ <span data-i18n="normalize">标准化数值</span></button></div></div>
+          <article class="before-after"><div class="before-box"><span class="chart-kicker">BEFORE</span><strong id="beforeMissing">—</strong><small data-i18n="missingCells">缺失单元格</small></div><div class="arrow">→</div><div class="after-box"><span class="chart-kicker">AFTER</span><strong id="afterMissing">—</strong><small data-i18n="missingCells">缺失单元格</small></div><div class="before-after-note" id="cleanNote" data-i18n="cleanNote">选择一个动作，查看清洗前后变化。</div></article>
+        </section>
+
+        <section class="view-panel hidden" id="view-story">
+          <div class="section-heading"><div><span class="section-index">04 / STORY</span><h2 data-i18n="storyTitle">每一步都能复现，也能解释</h2></div><button class="primary-button" id="copyCode"><span>⧉</span><span data-i18n="copyCode">复制 pandas 代码</span></button></div>
+          <div class="story-grid"><article class="timeline-card"><div class="chart-top"><div><span class="chart-kicker">ANALYSIS TRAIL</span><h3 data-i18n="trailTitle">分析轨迹</h3></div><button class="text-button" id="undoBtn" data-i18n="undo">撤销上一步</button></div><div id="timeline" class="timeline"></div></article><article class="code-card"><div class="chart-top"><div><span class="chart-kicker">PANDAS TRANSLATION</span><h3 data-i18n="codeTitle">等价代码</h3></div><span class="code-lang">PY</span></div><pre id="codeBlock"></pre></article></div>
+          <div class="story-callout"><span>✳</span><div><strong data-i18n="storyCalloutTitle">分析结果不是终点</strong><p data-i18n="storyCalloutText">你可以把当前数据、筛选条件和操作轨迹一起导出，方便复查或继续分析。</p></div><button class="outline-button" id="exportStory" data-i18n="exportStory">导出分析记录</button></div>
+        </section>
+
+        <footer class="footer"><span>© 2026 DataLens Studio</span><span data-i18n="footerText">Data to insight, step by step.</span><span class="mono">LOCAL / READY</span></footer>
+      </div>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
