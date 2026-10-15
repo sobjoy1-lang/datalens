@@ -1,4 +1,4 @@
-# DataLens · 数据到洞察
+# DataLens
 
 这是“可视化导论”数据分析作业的静态网站源代码。DataLens 用一个浏览器内的分析工作台把 pandas 的常用思路变成可视化操作，内置默认数据，也支持 CSV、TSV、JSON 和 Excel 文件。
 
